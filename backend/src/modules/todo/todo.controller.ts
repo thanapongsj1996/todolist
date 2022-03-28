@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Get, NotFoundException, Param, Post, Put } from '@nestjs/common'
 import { TodoService } from './todo.service'
 
 @Controller('todos')
@@ -24,7 +24,7 @@ export class TodosController {
     ) {
         const todo = await this.todoService.update(id, { status })
         if (!todo) {
-            throw new BadRequestException('Invalid todo')
+            throw new NotFoundException('Todo not found')
         }
 
         return todo

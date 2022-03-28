@@ -12,4 +12,16 @@ export class SubtaskService {
     create(data): Promise<Subtask[]> {
         return this.subtaskRepository.save(data)
     }
+
+    async update(todoId: number, subtaskId: number, data): Promise<any> {
+        const subtask = await this.subtaskRepository.findOne({
+            where: { todoId, id: subtaskId }
+        })
+        if (!subtask) {
+            return null
+        }
+
+        this.subtaskRepository.merge(subtask, data)
+        return this.subtaskRepository.save(subtask)
+    }
 }
