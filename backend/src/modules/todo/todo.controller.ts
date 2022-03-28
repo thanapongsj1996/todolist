@@ -6,14 +6,15 @@ export class TodosController {
     constructor(private todoService: TodoService) { }
 
     @Get()
-    getTodos() {
+    async getTodos() {
         return this.todoService.getAll()
+
     }
 
     @Post()
-    createTodo(
+    async createTodo(
         @Body('title') title: string
     ) {
-        return this.todoService.create({ title })
+        this.todoService.create({ title })
     }
 }
