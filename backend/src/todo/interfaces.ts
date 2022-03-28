@@ -1,0 +1,3 @@
+interface TodoInput {
+    title: string
+}

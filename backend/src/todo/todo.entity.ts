@@ -8,7 +8,7 @@ export class Todo {
     @Column()
     title: string
 
-    @Column()
+    @Column({ default: 'pending' })
     status: 'pending' | 'completed'
 
     @CreateDateColumn()

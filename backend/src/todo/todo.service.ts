@@ -3,12 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Todo } from './todo.entity'
 
-type Todos = {
-    title: string
-    status: 'pending' | 'completed'
-    createdAt: Date
-}
-
 @Injectable()
 export class TodoService {
     constructor(
@@ -17,5 +11,9 @@ export class TodoService {
 
     getAll(): Promise<Todo[]> {
         return this.todoRepository.find()
+    }
+
+    create(data: TodoInput): Promise<Todo[]> {
+        return this.todoRepository.save(data as any)
     }
 }
