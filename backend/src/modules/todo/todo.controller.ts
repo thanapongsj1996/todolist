@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
 import { TodoService } from './todo.service'
 
 @Controller('todos')
@@ -6,15 +6,27 @@ export class TodosController {
     constructor(private todoService: TodoService) { }
 
     @Get()
-    async getTodos() {
+    getTodos() {
         return this.todoService.getAll()
-
     }
 
     @Post()
-    async createTodo(
+    createTodo(
         @Body('title') title: string
     ) {
-        this.todoService.create({ title })
+        return this.todoService.create({ title })
+    }
+
+    @Put(':id')
+    async updateTodo(
+        @Param('id') id: number,
+        @Body('status') status: string
+    ) {
+        const todo = await this.todoService.update(id, { status })
+        if (!todo) {
+            throw new BadRequestException('Invalid todo')
+        }
+
+        return todo
     }
 }
