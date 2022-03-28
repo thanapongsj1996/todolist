@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Subtask } from "../subtask/subtask.entity"
 
 @Entity('todos')
 export class Todo {
@@ -13,4 +14,10 @@ export class Todo {
 
     @CreateDateColumn()
     createdAt: Date
+
+    @OneToMany(
+        type => Subtask,
+        subtask => subtask.todo
+    )
+    subtasks: Subtask[]
 }

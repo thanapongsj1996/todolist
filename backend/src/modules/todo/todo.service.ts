@@ -10,7 +10,7 @@ export class TodoService {
     ) { }
 
     getAll(): Promise<Todo[]> {
-        return this.todoRepository.find()
+        return this.todoRepository.find({ relations: ['subtasks'] })
     }
 
     create(data): Promise<Todo[]> {

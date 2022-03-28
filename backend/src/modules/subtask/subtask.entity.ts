@@ -1,4 +1,3 @@
-import { type } from "os";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Todo } from "../todo/todo.entity";
 
@@ -18,4 +17,10 @@ export class Subtask {
 
     @CreateDateColumn()
     createdAt: Date
+
+    @ManyToOne(
+        type => Todo,
+        todo => todo.subtasks
+    )
+    todo: Todo
 }
