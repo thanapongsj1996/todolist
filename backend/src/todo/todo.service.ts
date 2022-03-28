@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { Todo } from './todo.entity'
 
 type Todos = {
     title: string
@@ -8,20 +11,11 @@ type Todos = {
 
 @Injectable()
 export class TodoService {
-    constructor() { }
+    constructor(
+        @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>
+    ) { }
 
-    getAll(): Todos[] {
-        return [
-            {
-                title: 'Todo01',
-                status: 'pending',
-                createdAt: new Date(),
-            },
-            {
-                title: 'Todo02',
-                status: 'completed',
-                createdAt: new Date(),
-            },
-        ]
+    getAll(): Promise<Todo[]> {
+        return this.todoRepository.find()
     }
 }
