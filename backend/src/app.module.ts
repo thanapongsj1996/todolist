@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { SubtaskModule } from './modules/subtask/subtask.module'
 import { TodoModule } from './modules/todo/todo.module'
 
 @Module({
@@ -10,7 +11,8 @@ import { TodoModule } from './modules/todo/todo.module'
       autoLoadEntities: true,
       synchronize: true
     }),
-    TodoModule
+    TodoModule,
+    SubtaskModule
   ]
 })
 export class AppModule { }
