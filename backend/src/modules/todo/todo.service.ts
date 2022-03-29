@@ -13,11 +13,11 @@ export class TodoService {
         return this.todoRepository.find({ relations: ['subtasks'] })
     }
 
-    create(data): Promise<Todo[]> {
+    create(data: any): Promise<Todo[]> {
         return this.todoRepository.save(data as any)
     }
 
-    async update(id: number, data): Promise<any> {
+    async update(id: number, data: any): Promise<any> {
         const todo = await this.todoRepository.findOne(id)
         if (!todo) {
             return null

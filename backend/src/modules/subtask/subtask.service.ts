@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Subtask } from "./subtask.entity";
+import { Injectable } from "@nestjs/common"
+import { InjectRepository } from "@nestjs/typeorm"
+import { Repository } from "typeorm"
+import { Subtask } from "./subtask.entity"
 
 @Injectable()
 export class SubtaskService {
@@ -9,7 +9,7 @@ export class SubtaskService {
         @InjectRepository(Subtask) private readonly subtaskRepository: Repository<Subtask>
     ) { }
 
-    create(data): Promise<Subtask[]> {
+    create(data: any): Promise<Subtask[]> {
         return this.subtaskRepository.save(data)
     }
 

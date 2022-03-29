@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Todo } from "../todo/todo.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Todo } from "../todo/todo.entity"
 
 @Entity('subtasks')
 export class Subtask {
