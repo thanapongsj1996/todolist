@@ -1,21 +1,13 @@
-import { Response } from 'express'
-
-type JsonResponse = {
+export type JsonResponse = {
     status: boolean
-    data: any
+    data?: any
+    err?: string
 }
 
-function createResponse(status: boolean, data: any): JsonResponse {
-    return {
-        status,
-        data
-    }
+export function successResponse(data: any): JsonResponse {
+    return { status: true, data }
 }
 
-export function successResponse(res: Response, httpStatus: any, data: any) {
-    return res.status(httpStatus).json(createResponse(true, data))
-}
-
-export function failedResponse(res: Response, httpStatus: any) {
-    return res.status(httpStatus).json(createResponse(false, null))
+export function failedResponse(msg: string): JsonResponse {
+    return { status: false, err: msg }
 }

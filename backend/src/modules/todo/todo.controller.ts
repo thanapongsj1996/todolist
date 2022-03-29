@@ -1,43 +1,44 @@
-import { Body, Controller, Get, HttpStatus, NotFoundException, Param, Post, Put, Res } from '@nestjs/common'
-import { Response } from 'express';
+import { Body, Controller, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common'
 import { TodoService } from './todo.service'
-import { successResponse, failedResponse } from 'src/jsonResponse'
+import { successResponse, failedResponse } from '../../jsonResponse'
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor'
 
 @Controller('todos')
-export class TodosController {
+@UseInterceptors(TransformInterceptor)
+export class TodoController {
+    tempErrorWord = 'there are some errors'
+
     constructor(private todoService: TodoService) { }
 
     @Get()
-    async getTodos(@Res() res: Response) {
+    async getTodos() {
         const todos = await this.todoService.getAll()
         if (todos) {
-            return successResponse(res, HttpStatus.CREATED, todos)
+            return successResponse(todos)
         }
-        return failedResponse(res, HttpStatus.INTERNAL_SERVER_ERROR)
+        return failedResponse(this.tempErrorWord)
     }
 
     @Post()
     async createTodo(
-        @Res() res: Response,
         @Body('title') title: string
     ) {
         const todos = await this.todoService.create({ title })
         if (todos) {
-            return successResponse(res, HttpStatus.CREATED, todos)
+            return successResponse(todos)
         }
-        return failedResponse(res, HttpStatus.INTERNAL_SERVER_ERROR)
+        return failedResponse(this.tempErrorWord)
     }
 
     @Put(':id')
     async updateTodo(
-        @Res() res: Response,
         @Param('id') id: number,
         @Body('status') status: string
     ) {
         const todo = await this.todoService.update(id, { status })
         if (todo) {
-            return successResponse(res, HttpStatus.OK, todo)
+            return successResponse(todo)
         }
-        return failedResponse(res, HttpStatus.NOT_FOUND)
+        return failedResponse(this.tempErrorWord)
     }
 }
