@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common'
 import { TodoService } from './todo.service'
 import { successResponse, failedResponse } from '../../jsonResponse'
-import { TransformInterceptor } from 'src/interceptors/transform.interceptor'
+import { TransformInterceptor } from '../../interceptors/transform.interceptor'
 
 @Controller('todos')
 @UseInterceptors(TransformInterceptor)

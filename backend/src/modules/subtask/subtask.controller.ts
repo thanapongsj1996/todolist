@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Post, Put } from '@nestjs/common'
 import { SubtaskService } from './subtask.service'
-import { successResponse, failedResponse } from 'src/jsonResponse'
+import { successResponse, failedResponse } from '../../jsonResponse'
 
 @Controller('subtasks')
 export class SubtaskController {

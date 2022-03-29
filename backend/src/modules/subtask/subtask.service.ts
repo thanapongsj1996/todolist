@@ -9,7 +9,7 @@ export class SubtaskService {
         @InjectRepository(Subtask) private readonly subtaskRepository: Repository<Subtask>
     ) { }
 
-    create(data: any): Promise<Subtask[]> {
+    create(data: any): Promise<Subtask> {
         return this.subtaskRepository.save(data)
     }
 
