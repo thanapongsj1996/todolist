@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { TodoController } from './todo.controller'
 import { TodoService } from './todo.service'
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
+import { getRepositoryToken } from '@nestjs/typeorm'
 import { Todo } from './todo.entity'
 import { Repository } from 'typeorm'
 import { todoMock, todoMocks } from './todo.mock'
@@ -19,16 +19,15 @@ describe('TodoService', () => {
                 {
                     provide: getRepositoryToken(Todo),
                     useValue: {
-                        save: jest.fn(() => {
-                            return todoMock
-                        }),
-                        find: jest.fn(() => {
-                            return todoMocks
-                        }),
-                        findOne: jest.fn(() => {
-                            return todoMock
-                        }),
-                        merge: jest.fn()
+                        save: jest.fn(() => todoMock),
+                        find: jest.fn(() => todoMocks),
+                        findOne: jest.fn(() => todoMock),
+                        merge: jest.fn(),
+                        createQueryBuilder: jest.fn(() => ({
+                            leftJoinAndSelect: jest.fn().mockReturnThis(),
+                            orderBy: jest.fn().mockReturnThis(),
+                            getMany: jest.fn(() => todoMocks)
+                        }))
                     }
                 }
             ]
