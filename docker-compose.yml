@@ -1,0 +1,31 @@
+
+version: "3.8"
+services:
+    backend:
+        container_name: todo-backend
+        build:
+            dockerfile: Dockerfile
+            context: ./backend
+        depends_on: 
+            - postgres
+        environment: 
+            DATABASE_URL: $PG_DB_URL
+        ports:
+            - "8000:8000"
+        networks:
+            - global
+
+    postgres:
+        container_name: todo-postgres
+        image: postgres:10.4
+        ports:
+            - "5432:5432"
+        environment: 
+            POSTGRES_USER: $PG_DB_USERNAME
+            POSTGRES_PASSWORD: $PG_DB_PASSWORD
+            POSTGRES_DB: $PG_DB_NAME
+        networks:
+            - global
+networks:
+  global:
+    name: global
