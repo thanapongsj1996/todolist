@@ -10,7 +10,13 @@ export class TodoService {
     ) { }
 
     getAll(): Promise<Todo[]> {
-        return this.todoRepository.find({ relations: ['subtasks'] })
+        return this.todoRepository
+            .createQueryBuilder('todos')
+            .leftJoinAndSelect('todos.subtasks', 'subtasks')
+            .orderBy({
+                'todos.id': 'ASC',
+                'subtasks.id': 'ASC'
+            }).getMany()
     }
 
     create(data: any): Promise<Todo> {
