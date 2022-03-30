@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
-import { Subtask } from "../subtask/subtask.entity"
+/* istanbul ignore file */
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Subtask } from '../subtask/subtask.entity'
 
 @Entity('todos')
 export class Todo {

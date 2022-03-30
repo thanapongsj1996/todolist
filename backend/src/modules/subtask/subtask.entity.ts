@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Todo } from "../todo/todo.entity"
 
