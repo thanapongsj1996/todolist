@@ -1,4 +1,8 @@
 .jumbotron {
-  color: black;
+  color: whitesmoke;
   padding: 60px;
+  background-color: #4158D0;
+  text-align: center;
+  background-color: #0066ff;
+  background-image: linear-gradient(43deg, #0066ff 0%, #C850C0 58%, #FFCC70 81%);
 }

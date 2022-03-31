@@ -1,0 +1,41 @@
+.box__container {
+    padding: 40px;
+    border-radius: 20px;
+    background-color: rgba(247, 247, 247, 0.5);
+    box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.05);
+    -webkit-box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.05);
+    -moz-box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.05);
+}
+.todo__title {
+    font-size: 20px;
+    font-weight: bold;
+}
+.todo__status {
+    font-size: 16px;
+    color: rgb(178, 178, 179);
+}
+.todo__check {
+    font-size: 24px;
+}
+.todo__arrow {
+    cursor: pointer;
+    font-size: 24px;
+    color: rgb(190, 190, 190);
+}
+.todo__arrow:hover {
+    color: rgb(177, 177, 177);
+}
+
+.subtask__container {
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 20px;
+    background-color: white;
+    display: flex;
+}
+.subtask__check {
+    font-size: 18px;
+}
+.subtask__title {
+    font-size: 18px;
+}
