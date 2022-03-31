@@ -1,9 +1,31 @@
 import type { NextPage } from 'next'
+import { useEffect, useState } from 'react'
 import Jumbotron from '../components/Jumbotron'
 import TodoBox from '../components/TodoBox'
 import styles from '../styles/Home.module.css'
+import { Todos } from '../types'
 
 const Home: NextPage = () => {
+
+  const [todos, setTodos] = useState([] as Todos[])
+
+  useEffect(() => {
+    getTodos()
+  }, [])
+
+  const getTodos = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/todos`)
+      const todosJson = await response.json()
+      if (todosJson && todosJson.status == true) {
+        setTodos(todosJson.data)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
   return (
     <>
       <Jumbotron />
@@ -23,8 +45,7 @@ const Home: NextPage = () => {
         </div>
         <div className="row w-100 px-0 mx-0 mt-3">
           <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-            <TodoBox />
-            <TodoBox />
+            {todos.map(todo => <TodoBox key={todo.id} data={todo} />)}
           </div>
         </div>
       </div>

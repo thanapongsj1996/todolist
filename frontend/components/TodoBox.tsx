@@ -1,16 +1,27 @@
 import { useState } from 'react'
 import styles from '../styles/Home.module.css'
+import { Todos, Subtask } from '../types'
 
-const TodoBox = () => {
+type Props = { data: Todos }
+
+const TodoBox = (props: Props) => {
     const [show, setShow] = useState(false)
+
+    const getCompletedSubtasks = (subtasks: Subtask[]) => {
+        return subtasks.filter(s => s.status == 'completed').length
+    }
 
     return (
         <div className={styles.box__container + " my-4"}>
             <div className='d-flex'>
-                <input className={styles.todo__check + " form-check-input"} type="checkbox" value="" id="flexCheckDefault" />
+                <input className={styles.todo__check + " form-check-input"} type="checkbox" />
                 <div className='ms-3'>
-                    <span className={styles.todo__title}>Do laundry</span><br />
-                    <span className={styles.todo__status}>3 of 5 completed</span>
+                    <span className={styles.todo__title}>
+                        {props.data ? props.data.title : ''}
+                    </span><br />
+                    <span className={styles.todo__status}>
+                        {props.data ? getCompletedSubtasks(props.data.subtasks) : 0} of {props.data ? props.data.subtasks.length : 0} completed
+                    </span>
                 </div>
                 <div onClick={() => setShow(!show)} className={styles.todo__arrow + " ms-auto"}>
                     {show &&
@@ -37,33 +48,25 @@ const TodoBox = () => {
                         </svg>}
                 </div>
             </div>
-            {show && <>
+            {show && props.data && props.data.subtasks.map(subtask => <>
                 <div className={styles.subtask__container}>
-                    <input className={styles.subtask__check + " form-check-input"} type="checkbox" value="" />
-                    <div className='ms-3'>
-                        <span className={styles.subtask__title}>Do laundry 1</span>
-                    </div>
-                </div>
-                <div className={styles.subtask__container}>
-                    <input className={styles.subtask__check + " form-check-input"} type="checkbox" value="" />
-                    <div className='ms-3'>
-                        <span className={styles.subtask__title}>Do laundry 2</span>
-                    </div>
-                </div>
-                <div className={styles.subtask__container}>
-                    <input className={styles.subtask__check + " form-check-input"} type="checkbox" value="" />
-                    <div className='ms-3'>
-                        <span className={styles.subtask__title}>Do laundry 3</span>
-                    </div>
-                </div>
-                <div className='mt-3'>
                     <input
-                        type="text"
-                        className="form-control"
-                        placeholder="What are the steps?" />
-                    <div className="btn btn-warning mt-2 w-100">New Step</div>
+                        className={styles.subtask__check + " form-check-input"}
+                        type="checkbox"
+                        checked={subtask.status == 'completed'}
+                    />
+                    <div className='ms-3'>
+                        <span className={styles.subtask__title}>{subtask.title}</span>
+                    </div>
                 </div>
-            </>}
+            </>)}
+            {show && <div className='mt-3'>
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="What are the steps?" />
+                <div className="btn btn-warning mt-2 w-100">New Step</div>
+            </div>}
         </div>
     )
 }
