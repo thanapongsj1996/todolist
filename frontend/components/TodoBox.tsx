@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '../styles/Home.module.css'
 import { Todos, Subtask } from '../types'
+import { callAPI } from '../helpers/callAPI'
 
 type Props = { data: Todos }
 
@@ -9,24 +10,32 @@ const TodoBox = (props: Props) => {
     const [isCheck, setIsCheck] = useState(props.data?.status == 'completed')
     const [subtaskInput, setSubtaskInput] = useState('')
     const [subtasks, setSubtasks] = useState(props.data?.subtasks)
+    const [completedSubtaskCount, setCompletedSubtaskCount] = useState(0)
 
-    const getCompletedSubtasks = (subtasks: Subtask[]) => {
-        return subtasks.filter(s => s.status == 'completed').length
+    useEffect(() => {
+        getCompletedSubtasks()
+    }, [subtasks])
+
+    const getCompletedSubtasks = () => {
+        let count = 0
+        if (subtasks) {
+            count = subtasks.filter(s => s.status == 'completed').length
+        }
+        setCompletedSubtaskCount(count)
     }
 
     const addSubtask = async () => {
         try {
-            const resposne = await fetch(`http://localhost:8000/api/v1/subtasks/${props.data.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({ title: subtaskInput })
-            })
-            const resJson = await resposne.json()
+            const response = await callAPI(
+                `http://localhost:8000/api/v1/subtasks/${props.data.id}`,
+                'POST',
+                { title: subtaskInput }
+            )
+            const resJson = await response.json()
             if (resJson.status == true) {
                 setSubtasks([...subtasks, resJson.data])
                 setSubtaskInput('')
+                getCompletedSubtasks()
             } else {
                 alert('There was some errors, try again..')
             }
@@ -38,21 +47,40 @@ const TodoBox = (props: Props) => {
 
     const updateTodo = async (check: boolean) => {
         try {
-            const resposne = await fetch(`http://localhost:8000/api/v1/todos/${props.data.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({ status: check ? 'pending' : 'completed' })
-            })
-            const resJson = await resposne.json()
+            const response = await callAPI(
+                `http://localhost:8000/api/v1/todos/${props.data.id}`,
+                'PUT',
+                { status: check ? 'pending' : 'completed' }
+            )
+            const resJson = await response.json()
             if (resJson.status == true) {
                 setIsCheck(resJson.data.status == 'completed')
             } else {
                 alert('There was some errors, try again..')
             }
         } catch (e) {
+            console.log(e)
+        }
+    }
 
+    const updateSubtask = async (subtaskId: number, curStatus: string) => {
+        try {
+            const response = await callAPI(
+                `http://localhost:8000/api/v1/subtasks/${props.data.id}/${subtaskId}`,
+                'PUT',
+                { status: curStatus == 'pending' ? 'completed' : 'pending' }
+            )
+            const resJson = await response.json()
+            if (resJson.status == true) {
+                let tempSubtask = [...subtasks] as Subtask[]
+                const updatedIndex = tempSubtask.findIndex(s => s.id == subtaskId)
+                tempSubtask.splice(updatedIndex, 1, resJson.data as Subtask)
+                setSubtasks(tempSubtask)
+            } else {
+                alert('There was some errors, try again..')
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -70,7 +98,7 @@ const TodoBox = (props: Props) => {
                         {props.data ? props.data.title : ''}
                     </span><br />
                     <span className={styles.todo__status}>
-                        {props.data ? getCompletedSubtasks(props.data.subtasks) : 0} of {props.data ? props.data.subtasks.length : 0} completed
+                        {props.data ? completedSubtaskCount : 0} of {subtasks ? subtasks.length : 0} completed
                     </span>
                 </div>
                 <div onClick={() => setShow(!show)} className={styles.todo__arrow + " ms-auto"}>
@@ -98,18 +126,19 @@ const TodoBox = (props: Props) => {
                         </svg>}
                 </div>
             </div>
-            {show && props.data && subtasks.map(subtask => <>
-                <div className={styles.subtask__container}>
+            {show && props.data && subtasks.map(subtask =>
+                <div key={subtask.id} className={styles.subtask__container}>
                     <input
                         className={styles.subtask__check + " form-check-input"}
                         type="checkbox"
                         defaultChecked={subtask.status ? subtask.status == 'completed' : false}
+                        onChange={(e) => updateSubtask(subtask.id, subtask.status)}
                     />
                     <div className='ms-3'>
                         <span className={styles.subtask__title}>{subtask.title}</span>
                     </div>
                 </div>
-            </>)}
+            )}
             {show && <div className='mt-3'>
                 <input
                     type="text"

@@ -4,6 +4,7 @@ import Jumbotron from '../components/Jumbotron'
 import TodoBox from '../components/TodoBox'
 import styles from '../styles/Home.module.css'
 import { Todos } from '../types'
+import { callAPI } from '../helpers/callAPI'
 
 const Home: NextPage = () => {
 
@@ -16,7 +17,10 @@ const Home: NextPage = () => {
 
   const getTodos = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/todos`)
+      const response = await callAPI(
+        `http://localhost:8000/api/v1/todos`,
+        'GET',
+      )
       const todosJson = await response.json()
       if (todosJson && todosJson.status == true) {
         setTodos(todosJson.data)
@@ -28,14 +32,12 @@ const Home: NextPage = () => {
 
   const addTodo = async () => {
     try {
-      const resposne = await fetch(`http://localhost:8000/api/v1/todos`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ title: todoInput })
-      })
-      const resJson = await resposne.json()
+      const response = await callAPI(
+        `http://localhost:8000/api/v1/todos`,
+        'POST',
+        { title: todoInput }
+      )
+      const resJson = await response.json()
       if (resJson.status == true) {
         alert('Your todo is added')
         location.reload()
