@@ -5,10 +5,13 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Todo } from './todo.entity'
 import { Repository } from 'typeorm'
 import { todoMock, todoMocks } from './todo.mock'
+import { Subtask } from './subtask.entity'
+import { subtaskMock } from './subtask.mock'
 
 describe('TodoService', () => {
     let service: TodoService
     let repository: Repository<Todo>
+    let subtaskRepository: Repository<Subtask>
     let failedService: TodoService
 
     beforeEach(async () => {
@@ -26,6 +29,24 @@ describe('TodoService', () => {
                         createQueryBuilder: jest.fn(() => ({
                             leftJoinAndSelect: jest.fn().mockReturnThis(),
                             orderBy: jest.fn().mockReturnThis(),
+                            where: jest.fn().mockReturnThis(),
+                            getOne: jest.fn(() => todoMock),
+                            getMany: jest.fn(() => todoMocks)
+                        }))
+                    }
+                },
+                {
+                    provide: getRepositoryToken(Subtask),
+                    useValue: {
+                        save: jest.fn(() => todoMock),
+                        find: jest.fn(() => todoMocks),
+                        findOne: jest.fn(() => todoMock),
+                        merge: jest.fn(),
+                        createQueryBuilder: jest.fn(() => ({
+                            leftJoinAndSelect: jest.fn().mockReturnThis(),
+                            orderBy: jest.fn().mockReturnThis(),
+                            where: jest.fn().mockReturnThis(),
+                            getOne: jest.fn(() => todoMock),
                             getMany: jest.fn(() => todoMocks)
                         }))
                     }
@@ -51,12 +72,29 @@ describe('TodoService', () => {
                         }),
                         merge: jest.fn()
                     }
+                },
+                {
+                    provide: getRepositoryToken(Subtask),
+                    useValue: {
+                        save: jest.fn(() => null),
+                        find: jest.fn(() => null),
+                        findOne: jest.fn(() => null),
+                        merge: jest.fn(),
+                        createQueryBuilder: jest.fn(() => ({
+                            leftJoinAndSelect: jest.fn().mockReturnThis(),
+                            orderBy: jest.fn().mockReturnThis(),
+                            where: jest.fn().mockReturnThis(),
+                            getOne: jest.fn(() => null),
+                            getMany: jest.fn(() => null)
+                        }))
+                    }
                 }
             ]
         }).compile()
 
         service = module.get<TodoService>(TodoService)
         repository = module.get<Repository<Todo>>(getRepositoryToken(Todo))
+        subtaskRepository = module.get<Repository<Subtask>>(getRepositoryToken(Subtask))
         failedService = failedModule.get<TodoService>(TodoService)
     })
 
@@ -82,4 +120,16 @@ describe('TodoService', () => {
         const todo = await failedService.update(1, todoMock)
         expect(todo).toBe(null)
     })
+    it('can get todo by id', async () => {
+        const todo = await service.getTodoById(1)
+        expect(todo).toBe(todoMock)
+    })
+    // it('update should return mock data', async () => {
+    //     const subtask = await service.update(1, { status: 'pending' })
+    //     expect(subtask).toBe(subtaskMock)
+    // })
+    // it('update failed should return null', async () => {
+    //     const subtask = await failedService.update(1, { status: 'pending' })
+    //     expect(subtask).toBe(null)
+    // })
 })

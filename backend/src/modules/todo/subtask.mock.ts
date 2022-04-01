@@ -1,4 +1,4 @@
-import { Subtask } from './subtask.entity'
+import { Subtask } from '../todo/subtask.entity'
 
 export const subtaskMock: Subtask = {
     id: 1,
