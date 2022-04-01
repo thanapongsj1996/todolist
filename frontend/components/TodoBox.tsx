@@ -14,7 +14,7 @@ const TodoBox = (props: Props) => {
 
     useEffect(() => {
         getCompletedSubtasks()
-    }, [subtasks])
+    })
 
     const getCompletedSubtasks = () => {
         let count = 0
@@ -27,7 +27,7 @@ const TodoBox = (props: Props) => {
     const addSubtask = async () => {
         try {
             const response = await callAPI(
-                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/subtasks/${props.data.id}`,
+                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos/${props.data.id}`,
                 'POST',
                 { title: subtaskInput }
             )
@@ -36,6 +36,7 @@ const TodoBox = (props: Props) => {
                 setSubtasks([...subtasks, resJson.data])
                 setSubtaskInput('')
                 getCompletedSubtasks()
+                setIsCheck(false)
             } else {
                 alert('There was some errors, try again..')
             }
@@ -55,6 +56,8 @@ const TodoBox = (props: Props) => {
             const resJson = await response.json()
             if (resJson.status == true) {
                 setIsCheck(resJson.data.status == 'completed')
+                setSubtasks(resJson.data.subtasks)
+                getCompletedSubtasks()
             } else {
                 alert('There was some errors, try again..')
             }
@@ -66,7 +69,7 @@ const TodoBox = (props: Props) => {
     const updateSubtask = async (subtaskId: number, curStatus: string) => {
         try {
             const response = await callAPI(
-                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/subtasks/${props.data.id}/${subtaskId}`,
+                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos/${props.data.id}/${subtaskId}`,
                 'PUT',
                 { status: curStatus == 'pending' ? 'completed' : 'pending' }
             )
@@ -76,6 +79,10 @@ const TodoBox = (props: Props) => {
                 const updatedIndex = tempSubtask.findIndex(s => s.id == subtaskId)
                 tempSubtask.splice(updatedIndex, 1, resJson.data as Subtask)
                 setSubtasks(tempSubtask)
+
+                if (curStatus == 'completed') {
+                    setIsCheck(false)
+                }
             } else {
                 alert('There was some errors, try again..')
             }
@@ -90,7 +97,7 @@ const TodoBox = (props: Props) => {
                 <input
                     className={styles.todo__check + " form-check-input"}
                     type="checkbox"
-                    defaultChecked={props.data.status ? props.data.status == 'completed' : false}
+                    checked={isCheck}
                     onChange={() => updateTodo(isCheck)}
                 />
                 <div className='ms-3'>
@@ -126,12 +133,12 @@ const TodoBox = (props: Props) => {
                         </svg>}
                 </div>
             </div>
-            {show && props.data && subtasks.map(subtask =>
+            {show && subtasks && subtasks.map(subtask =>
                 <div key={subtask.id} className={styles.subtask__container}>
                     <input
                         className={styles.subtask__check + " form-check-input"}
                         type="checkbox"
-                        defaultChecked={subtask.status ? subtask.status == 'completed' : false}
+                        checked={subtask.status ? subtask.status == 'completed' : false}
                         onChange={(e) => updateSubtask(subtask.id, subtask.status)}
                     />
                     <div className='ms-3'>
