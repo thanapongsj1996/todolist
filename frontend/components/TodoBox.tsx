@@ -6,7 +6,7 @@ type Props = { data: Todos }
 
 const TodoBox = (props: Props) => {
     const [show, setShow] = useState(false)
-    const [isCheck, setIsCheck] = useState(true)
+    const [isCheck, setIsCheck] = useState(props.data?.status == 'completed')
     const [subtaskInput, setSubtaskInput] = useState('')
     const [subtasks, setSubtasks] = useState(props.data?.subtasks)
 
@@ -32,6 +32,27 @@ const TodoBox = (props: Props) => {
             }
         } catch (e) {
             console.log(e)
+            location.reload()
+        }
+    }
+
+    const updateTodo = async (check: boolean) => {
+        try {
+            const resposne = await fetch(`http://localhost:8000/api/v1/todos/${props.data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ status: check ? 'pending' : 'completed' })
+            })
+            const resJson = await resposne.json()
+            if (resJson.status == true) {
+                setIsCheck(resJson.data.status == 'completed')
+            } else {
+                alert('There was some errors, try again..')
+            }
+        } catch (e) {
+
         }
     }
 
@@ -42,7 +63,7 @@ const TodoBox = (props: Props) => {
                     className={styles.todo__check + " form-check-input"}
                     type="checkbox"
                     defaultChecked={props.data.status ? props.data.status == 'completed' : false}
-                    onChange={() => setIsCheck(!isCheck)}
+                    onChange={() => updateTodo(isCheck)}
                 />
                 <div className='ms-3'>
                     <span className={styles.todo__title} onClick={() => setShow(!show)}>
