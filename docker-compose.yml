@@ -15,6 +15,20 @@ services:
         networks:
             - global
 
+    frontend:
+        container_name: todo-frontend
+        build:
+            dockerfile: Dockerfile
+            context: ./frontend
+        depends_on: 
+            - backend
+        environment: 
+            NEXT_PUBLIC_TODO_API_ENDPOINT: http://localhost:8000/api/v1
+        ports:
+            - "3000:3000"
+        networks:
+            - global
+
     postgres:
         container_name: todo-postgres
         image: postgres:10.4
