@@ -42,7 +42,7 @@ export class TodoController {
             if (status == 'completed') {
                 await this.todoService.completeSubtasks(id)
             }
-            return successResponse(todo)
+            return this.todoService.getTodoById(id)
         }
         return failedResponse(this.tempErrorWord)
     }

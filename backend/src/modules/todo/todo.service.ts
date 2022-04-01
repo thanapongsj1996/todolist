@@ -25,6 +25,17 @@ export class TodoService {
         return this.todoRepository.save(data as any)
     }
 
+    async getTodoById(id: number): Promise<Todo> {
+        return this.todoRepository
+            .createQueryBuilder('todos')
+            .leftJoinAndSelect('todos.subtasks', 'subtasks')
+            .where({ id: id })
+            .orderBy({
+                'todos.id': 'ASC',
+                'subtasks.id': 'ASC'
+            }).getOne()
+    }
+
     async update(id: number, data: any): Promise<any> {
         const todo = await this.todoRepository.findOne(id)
         if (!todo) {
