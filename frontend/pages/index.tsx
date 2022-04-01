@@ -10,6 +10,7 @@ const Home: NextPage = () => {
 
   const [todos, setTodos] = useState([] as Todos[])
   const [todoInput, setTodoInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     getTodos()
@@ -31,6 +32,7 @@ const Home: NextPage = () => {
   }
 
   const addTodo = async () => {
+    setIsLoading(true)
     try {
       const response = await callAPI(
         `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos`,
@@ -39,7 +41,6 @@ const Home: NextPage = () => {
       )
       const resJson = await response.json()
       if (resJson.status == true) {
-        alert('Your todo is added')
         location.reload()
       } else {
         alert('There was some errors, try again..')
@@ -47,10 +48,12 @@ const Home: NextPage = () => {
     } catch (e) {
       console.log(e)
     }
+    setIsLoading(false)
   }
 
   return (
     <>
+      {isLoading && <div className="loading" />}
       <Jumbotron />
       <div className="container d-flex flex-column py-5">
         <div className="row w-100 px-0 mx-0">
