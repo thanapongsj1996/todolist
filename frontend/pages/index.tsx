@@ -18,7 +18,7 @@ const Home: NextPage = () => {
   const getTodos = async () => {
     try {
       const response = await callAPI(
-        `http://localhost:8000/api/v1/todos`,
+        `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos`,
         'GET',
       )
       const todosJson = await response.json()
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
   const addTodo = async () => {
     try {
       const response = await callAPI(
-        `http://localhost:8000/api/v1/todos`,
+        `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos`,
         'POST',
         { title: todoInput }
       )

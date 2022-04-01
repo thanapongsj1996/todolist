@@ -27,7 +27,7 @@ const TodoBox = (props: Props) => {
     const addSubtask = async () => {
         try {
             const response = await callAPI(
-                `http://localhost:8000/api/v1/subtasks/${props.data.id}`,
+                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/subtasks/${props.data.id}`,
                 'POST',
                 { title: subtaskInput }
             )
@@ -48,7 +48,7 @@ const TodoBox = (props: Props) => {
     const updateTodo = async (check: boolean) => {
         try {
             const response = await callAPI(
-                `http://localhost:8000/api/v1/todos/${props.data.id}`,
+                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/todos/${props.data.id}`,
                 'PUT',
                 { status: check ? 'pending' : 'completed' }
             )
@@ -66,7 +66,7 @@ const TodoBox = (props: Props) => {
     const updateSubtask = async (subtaskId: number, curStatus: string) => {
         try {
             const response = await callAPI(
-                `http://localhost:8000/api/v1/subtasks/${props.data.id}/${subtaskId}`,
+                `${process.env.NEXT_PUBLIC_TODO_API_ENDPOINT}/subtasks/${props.data.id}/${subtaskId}`,
                 'PUT',
                 { status: curStatus == 'pending' ? 'completed' : 'pending' }
             )
