@@ -10,7 +10,7 @@ describe('TodoController', () => {
     const tmpErrorWord = 'there are some errors'
 
     beforeEach(async () => {
-        todoService = new TodoService(null)
+        todoService = new TodoService(null, null)
         todoController = new TodoController(todoService)
     })
 

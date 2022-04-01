@@ -8,7 +8,9 @@ import { TransformInterceptor } from '../../interceptors/transform.interceptor'
 export class TodoController {
     tempErrorWord = 'there are some errors'
 
-    constructor(private todoService: TodoService) { }
+    constructor(
+        private todoService: TodoService
+    ) { }
 
     @Get()
     async getTodos() {
@@ -37,7 +39,38 @@ export class TodoController {
     ) {
         const todo = await this.todoService.update(id, { status })
         if (todo) {
+            if (status == 'complete') {
+                await this.todoService.completeSubtasks(id)
+            }
             return successResponse(todo)
+        }
+        return failedResponse(this.tempErrorWord)
+    }
+
+    @Post(':todoId')
+    async createSubtask(
+        @Param('todoId') todoId: number,
+        @Body('title') title: string
+    ) {
+        const subtask = await this.todoService.createSubtask({ todoId, title })
+        if (subtask) {
+            return successResponse(subtask)
+        }
+        return failedResponse(this.tempErrorWord)
+    }
+
+    @Put(':todoId/:subtaskId')
+    async updateSubtask(
+        @Param('todoId') todoId: number,
+        @Param('subtaskId') subtaskId: number,
+        @Body('status') status: string
+    ) {
+        const subtask = await this.todoService.updateSubtask(todoId, subtaskId, { status })
+        if (subtask) {
+            if (status == 'pending') {
+                await this.todoService.update(todoId, { status })
+            }
+            return successResponse(subtask)
         }
         return failedResponse(this.tempErrorWord)
     }
