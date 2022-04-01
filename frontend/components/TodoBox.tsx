@@ -6,17 +6,46 @@ type Props = { data: Todos }
 
 const TodoBox = (props: Props) => {
     const [show, setShow] = useState(false)
+    const [isCheck, setIsCheck] = useState(true)
+    const [subtaskInput, setSubtaskInput] = useState('')
+    const [subtasks, setSubtasks] = useState(props.data?.subtasks)
 
     const getCompletedSubtasks = (subtasks: Subtask[]) => {
         return subtasks.filter(s => s.status == 'completed').length
     }
 
+    const addSubtask = async () => {
+        try {
+            const resposne = await fetch(`http://localhost:8000/api/v1/subtasks/${props.data.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ title: subtaskInput })
+            })
+            const resJson = await resposne.json()
+            if (resJson.status == true) {
+                setSubtasks([...subtasks, resJson.data])
+                setSubtaskInput('')
+            } else {
+                alert('There was some errors, try again..')
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <div className={styles.box__container + " my-4"}>
             <div className='d-flex'>
-                <input className={styles.todo__check + " form-check-input"} type="checkbox" />
+                <input
+                    className={styles.todo__check + " form-check-input"}
+                    type="checkbox"
+                    defaultChecked={props.data.status ? props.data.status == 'completed' : false}
+                    onChange={() => setIsCheck(!isCheck)}
+                />
                 <div className='ms-3'>
-                    <span className={styles.todo__title}>
+                    <span className={styles.todo__title} onClick={() => setShow(!show)}>
                         {props.data ? props.data.title : ''}
                     </span><br />
                     <span className={styles.todo__status}>
@@ -48,12 +77,12 @@ const TodoBox = (props: Props) => {
                         </svg>}
                 </div>
             </div>
-            {show && props.data && props.data.subtasks.map(subtask => <>
+            {show && props.data && subtasks.map(subtask => <>
                 <div className={styles.subtask__container}>
                     <input
                         className={styles.subtask__check + " form-check-input"}
                         type="checkbox"
-                        checked={subtask.status == 'completed'}
+                        defaultChecked={subtask.status ? subtask.status == 'completed' : false}
                     />
                     <div className='ms-3'>
                         <span className={styles.subtask__title}>{subtask.title}</span>
@@ -64,8 +93,15 @@ const TodoBox = (props: Props) => {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="What are the steps?" />
-                <div className="btn btn-warning mt-2 w-100">New Step</div>
+                    placeholder="What are the steps?"
+                    value={subtaskInput}
+                    onChange={(e) => setSubtaskInput(e.target.value)}
+                />
+                <button
+                    className="btn btn-warning mt-2 w-100"
+                    disabled={subtaskInput == ''}
+                    onClick={() => { addSubtask() }}
+                >New Step</button>
             </div>}
         </div>
     )

@@ -8,6 +8,7 @@ import { Todos } from '../types'
 const Home: NextPage = () => {
 
   const [todos, setTodos] = useState([] as Todos[])
+  const [todoInput, setTodoInput] = useState('')
 
   useEffect(() => {
     getTodos()
@@ -25,6 +26,26 @@ const Home: NextPage = () => {
     }
   }
 
+  const addTodo = async () => {
+    try {
+      const resposne = await fetch(`http://localhost:8000/api/v1/todos`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ title: todoInput })
+      })
+      const resJson = await resposne.json()
+      if (resJson.status == true) {
+        alert('Your todo is added')
+        location.reload()
+      } else {
+        alert('There was some errors, try again..')
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <>
@@ -37,9 +58,17 @@ const Home: NextPage = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="What to do?" />
+                  placeholder="What to do?"
+                  value={todoInput}
+                  onChange={(e) => setTodoInput(e.target.value)}
+                />
+
               </div>
-              <div className="btn btn-lg btn-primary mt-2 w-100">Add new todo</div>
+              <button
+                className="btn btn-lg btn-primary mt-2 w-100"
+                disabled={todoInput == ''}
+                onClick={() => { addTodo() }}
+              >Add new todo</button>
             </div>
           </div>
         </div>

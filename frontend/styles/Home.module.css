@@ -9,6 +9,7 @@
 .todo__title {
     font-size: 20px;
     font-weight: bold;
+    cursor: pointer;
 }
 .todo__status {
     font-size: 16px;
