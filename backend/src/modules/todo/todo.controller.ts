@@ -39,7 +39,7 @@ export class TodoController {
     ) {
         const todo = await this.todoService.update(id, { status })
         if (todo) {
-            if (status == 'complete') {
+            if (status == 'completed') {
                 await this.todoService.completeSubtasks(id)
             }
             return successResponse(todo)
