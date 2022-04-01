@@ -10,8 +10,8 @@ dotenv.config()
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: "postgres://localhost:5432/todos",
-      // url: process.env.DATABASE_URL,
+      // url: "postgres://localhost:5432/todos",
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true
     }),
