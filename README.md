@@ -1,4 +1,4 @@
-# Todo List (OOZOU)
+# Todo List
 ### Tech stackTech stack
 - **Frontend** : NextJS , Bootstrap
 - **Backend** : NestJS
@@ -27,5 +27,4 @@ API server is running on http://localhost:8000
 ------------
 ### Contact me
 **Name** : Thanapong Somjai
-**Tel** : 085-690-0809
 **Email** : thanapongsj1996@gmail.com
